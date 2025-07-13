@@ -7,8 +7,12 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
 
 def get_students():
-    students = db.child("students").get()
-    return [(s.key(), s.val()["name"]) for s in students.each()] if students.each() else []
+    try:
+        students = db.child("students").get()
+        return [(s.key(), s.val()["name"]) for s in students.each()] if students.each() else []
+    except Exception as e:
+        # 데이터가 없거나 404일 때 빈 리스트 반환
+        return []
 
 def mark_attendance(student_id, status):
     today = datetime.now().strftime('%Y-%m-%d')
